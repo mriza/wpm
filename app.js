@@ -11,7 +11,7 @@ const app = express();
 // Middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
-app.use(session({ secret: 'lskk-secret', resave: false, saveUninitialized: false }));
+app.use(session({ secret: 'secret-rahasia', resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.set('view engine', 'ejs');
@@ -33,7 +33,7 @@ const ensureAuthenticated = (req, res, next) => {
 };
 
 // Routes
-app.get('/login', (req, res) => res.render('login', { title: 'Login - LSKK PM2 Manager' }));
+app.get('/login', (req, res) => res.render('login', { title: 'Login - PM2 Manager' }));
 
 app.post('/login', passport.authenticate('local', {
     successRedirect: '/',
@@ -50,7 +50,7 @@ app.get('/', ensureAuthenticated, (req, res) => {
         PM2.list((err, processList) => {
             if (err) return res.send('Error fetching PM2 processes');
             PM2.disconnect();
-            res.render('processes', { title: 'LSKK PM2 Manager', processes: processList });
+            res.render('processes', { title: 'PM2 Manager', processes: processList });
         });
     });
 });
@@ -176,4 +176,4 @@ app.get('/process/:id/log', ensureAuthenticated, (req, res) => {
 
 
 const PORT = 3000;
-app.listen(PORT, () => console.log(`LSKK PM2 Manager running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`PM2 Manager running on http://localhost:${PORT}`));
