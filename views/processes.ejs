@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %></title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    button:disabled {
+      background-color: #d1d5db; /* Gray */
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
   <header class="bg-blue-500 text-white py-4 shadow-md">
@@ -17,7 +23,7 @@
   </header>
   <main class="container mx-auto px-4 py-8">
     <h2 class="text-2xl font-bold mb-4">PM2 Processes</h2>
-    <table class="min-w-full bg-white shadow-md rounded mb-6">
+    <table id="process-table" class="min-w-full bg-white shadow-md rounded mb-6">
       <thead>
         <tr class="bg-gray-100">
           <th class="border px-4 py-2">Name</th>
@@ -29,21 +35,40 @@
       </thead>
       <tbody>
         <% processes.forEach(process => { %>
-        <tr>
-          <td class="border px-4 py-2"><a href="/process/<%= process.pm_id %>" class="text-blue-500 hover:underline"><%= process.name %></a></td>
+        <tr data-id="<%= process.pm_id %>">
+          <td class="border px-4 py-2">
+            <a href="/process/<%= process.pm_id %>" class="text-blue-500 hover:underline"><%= process.name %></a>
+          </td>
           <td class="border px-4 py-2"><%= process.pm2_env.status %></td>
           <td class="border px-4 py-2"><%= (process.monit.memory / 1024 / 1024).toFixed(2) %> MB</td>
           <td class="border px-4 py-2"><%= process.monit.cpu %>%</td>
           <td class="border px-4 py-2">
+            <!-- Start Button -->
             <form action="/process/<%= process.pm_id %>/start" method="POST" class="inline-block">
-              <button type="submit" class="bg-green-500 text-white py-1 px-2 rounded hover:bg-green-600">Start</button>
+              <button 
+                type="submit" 
+                class="bg-green-500 text-white py-1 px-2 rounded hover:bg-green-600"
+                <%= process.pm2_env.status === 'online' ? 'disabled' : '' %>>
+                Start
+              </button>
             </form>
+
+            <!-- Stop Button -->
             <form action="/process/<%= process.pm_id %>/stop" method="POST" class="inline-block">
-              <button type="submit" class="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600">Stop</button>
+              <button 
+                type="submit" 
+                class="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600"
+                <%= process.pm2_env.status === 'offline' ? 'disabled' : '' %>>
+                Stop
+              </button>
             </form>
+
+            <!-- Restart Button -->
             <form action="/process/<%= process.pm_id %>/restart" method="POST" class="inline-block">
               <button type="submit" class="bg-yellow-500 text-white py-1 px-2 rounded hover:bg-yellow-600">Restart</button>
             </form>
+
+            <!-- Reload Button -->
             <form action="/process/<%= process.pm_id %>/reload" method="POST" class="inline-block">
               <button type="submit" class="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600">Reload</button>
             </form>

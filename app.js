@@ -67,50 +67,50 @@ app.get('/process/:id', ensureAuthenticated, (req, res) => {
     });
 });
 
+// Start process
 app.post('/process/:id/start', ensureAuthenticated, (req, res) => {
     const processId = req.params.id;
     PM2.connect((err) => {
         if (err) return res.send('Error connecting to PM2');
         PM2.start(processId, (err) => {
-            if (err) return res.send('Error starting process');
             PM2.disconnect();
-            res.redirect(`/process/${processId}`);
+            res.redirect('/'); // Redirect to process list
         });
     });
 });
 
+// Stop process
 app.post('/process/:id/stop', ensureAuthenticated, (req, res) => {
     const processId = req.params.id;
     PM2.connect((err) => {
         if (err) return res.send('Error connecting to PM2');
         PM2.stop(processId, (err) => {
-            if (err) return res.send('Error stopping process');
             PM2.disconnect();
-            res.redirect(`/process/${processId}`);
+            res.redirect('/'); // Redirect to process list
         });
     });
 });
 
+// Restart process
 app.post('/process/:id/restart', ensureAuthenticated, (req, res) => {
     const processId = req.params.id;
     PM2.connect((err) => {
         if (err) return res.send('Error connecting to PM2');
         PM2.restart(processId, (err) => {
-            if (err) return res.send('Error restarting process');
             PM2.disconnect();
-            res.redirect(`/process/${processId}`);
+            res.redirect('/'); // Redirect to process list
         });
     });
 });
 
+// Reload process
 app.post('/process/:id/reload', ensureAuthenticated, (req, res) => {
     const processId = req.params.id;
     PM2.connect((err) => {
         if (err) return res.send('Error connecting to PM2');
         PM2.reload(processId, (err) => {
-            if (err) return res.send('Error reloading process');
             PM2.disconnect();
-            res.redirect(`/process/${processId}`);
+            res.redirect('/'); // Redirect to process list
         });
     });
 });
@@ -127,6 +127,51 @@ app.post('/process/:id/delete', ensureAuthenticated, (req, res) => {
     });
 });
 
+app.get('/api/processes', ensureAuthenticated, (req, res) => {
+    PM2.connect((err) => {
+        if (err) return res.status(500).json({ error: 'Error connecting to PM2' });
+        PM2.list((err, processList) => {
+            if (err) return res.status(500).json({ error: 'Error fetching processes' });
+            PM2.disconnect();
+            res.json(processList); // Return the updated process list as JSON
+        });
+    });
+});
+
+app.get('/process/:id/log', ensureAuthenticated, (req, res) => {
+    const processId = req.params.id; // Extract process ID from the URL
+
+    PM2.connect((err) => {
+        if (err) return res.status(500).send('Error connecting to PM2');
+
+        PM2.describe(processId, (err, processDescription) => {
+            if (err || !processDescription[0]) {
+                PM2.disconnect();
+                return res.status(404).send('Process not found');
+            }
+
+            const outLogPath = processDescription[0]?.pm2_env.pm_out_log_path || null;
+            const errLogPath = processDescription[0]?.pm2_env.pm_err_log_path || null;
+
+            const outLogContent = outLogPath && fs.existsSync(outLogPath)
+                ? fs.readFileSync(outLogPath, 'utf8')
+                : 'No out log available';
+
+            const errLogContent = errLogPath && fs.existsSync(errLogPath)
+                ? fs.readFileSync(errLogPath, 'utf8')
+                : 'No error log available';
+
+            PM2.disconnect();
+
+            res.render('process-log', {
+                title: 'Process Logs',
+                process: processDescription[0],
+                outLogContent,
+                errLogContent
+            });
+        });
+    });
+});
 
 
 

@@ -9,7 +9,7 @@
 <body class="bg-gray-50 min-h-screen">
   <header class="bg-blue-500 text-white py-4 shadow-md">
     <div class="container mx-auto px-4 flex justify-between items-center">
-      <h1 class="text-lg font-bold">LSKK PM2 Manager</h1>
+      <h1 class="text-lg font-bold">PM2 Manager</h1>
       <nav class="space-x-4">
         <a href="/" class="hover:underline">Home</a>
         <a href="/logout" class="hover:underline">Logout</a>
@@ -46,6 +46,8 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Action Buttons -->
     <div class="space-x-4 mb-6">
       <form action="/process/<%= process.pm_id %>/start" method="POST" class="inline-block">
         <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">Start</button>
@@ -59,11 +61,13 @@
       <form action="/process/<%= process.pm_id %>/reload" method="POST" class="inline-block">
         <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Reload</button>
       </form>
+      <a href="/process/<%= process.pm_id %>/log" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">View Log</a>
       <form action="/process/<%= process.pm_id %>/delete" method="POST" class="inline-block">
         <button type="submit" class="bg-red-700 text-white py-2 px-4 rounded hover:bg-red-800">Delete</button>
       </form>
     </div>
-    <a href="/" class="inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Back</a>
+
+    <a href="/" class="inline-block mt-6 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Back</a>
   </main>
 </body>
 </html>
