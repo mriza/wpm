@@ -33,7 +33,7 @@ const ensureAuthenticated = (req, res, next) => {
 };
 
 // Routes
-app.get('/login', (req, res) => res.render('login', { title: 'Login - PM2 Manager' }));
+app.get('/login', (req, res) => res.render('login', { title: 'Login - WPM PM2 Manager' }));
 
 app.post('/login', passport.authenticate('local', {
     successRedirect: '/',
@@ -50,7 +50,7 @@ app.get('/', ensureAuthenticated, (req, res) => {
         PM2.list((err, processList) => {
             if (err) return res.send('Error fetching PM2 processes');
             PM2.disconnect();
-            res.render('processes', { title: 'PM2 Manager', processes: processList });
+            res.render('processes', { title: 'Processes - WPM PM2 Manager', processes: processList });
         });
     });
 });
@@ -62,7 +62,7 @@ app.get('/process/:id', ensureAuthenticated, (req, res) => {
         PM2.describe(processId, (err, processDescription) => {
             if (err) return res.send('Error fetching process details');
             PM2.disconnect();
-            res.render('process-details', { title: 'Process Details', process: processDescription[0] });
+            res.render('process-details', { title: 'Process Details - WPM PM2 Manager', process: processDescription[0] });
         });
     });
 });
@@ -164,7 +164,7 @@ app.get('/process/:id/log', ensureAuthenticated, (req, res) => {
             PM2.disconnect();
 
             res.render('process-log', {
-                title: 'Process Logs',
+                title: 'Process Logs - WPM PM2 Manager',
                 process: processDescription[0],
                 outLogContent,
                 errLogContent

@@ -58,7 +58,7 @@
               <button 
                 type="submit" 
                 class="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600"
-                <%= process.pm2_env.status === 'offline' ? 'disabled' : '' %>>
+                <%= process.pm2_env.status === 'stopped' ? 'disabled' : '' %>>
                 Stop
               </button>
             </form>

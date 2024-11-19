@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %></title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    button:disabled {
+      background-color: #d1d5db; /* Gray */
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
   <header class="bg-blue-500 text-white py-4 shadow-md">
@@ -50,10 +56,10 @@
     <!-- Action Buttons -->
     <div class="space-x-4 mb-6">
       <form action="/process/<%= process.pm_id %>/start" method="POST" class="inline-block">
-        <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">Start</button>
+        <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600" <%= process.pm2_env.status === 'online' ? 'disabled' : '' %>>Start</button>
       </form>
       <form action="/process/<%= process.pm_id %>/stop" method="POST" class="inline-block">
-        <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Stop</button>
+        <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600" <%= process.pm2_env.status === 'stopped' ? 'disabled' : '' %>>Stop</button>
       </form>
       <form action="/process/<%= process.pm_id %>/restart" method="POST" class="inline-block">
         <button type="submit" class="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600">Restart</button>
